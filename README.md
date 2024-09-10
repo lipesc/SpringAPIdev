@@ -9,7 +9,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 💻 Projeto
 
-Teste para empresa tgid vaga Java Developer estágio.
+Sistema simples que simula transações financeiras entre empresas e clientes.
 
 ### Objetivo Principal:
 

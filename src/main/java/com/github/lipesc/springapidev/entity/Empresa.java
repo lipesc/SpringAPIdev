@@ -1,15 +1,16 @@
-package com.github.lipesc.tgidjavadeveloper.empresa;
+package com.github.lipesc.springapidev.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Empresa {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true)
@@ -19,6 +20,8 @@ public class Empresa {
   private double saldo;
   private double receberDeposito;
   private double taxaSaque;
+
+  public Empresa() {}
 
   public Empresa(
     Long id,
