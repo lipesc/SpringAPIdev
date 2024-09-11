@@ -1,4 +1,4 @@
-package com.github.lipesc.tgidjavadeveloper;
+package com.github.lipesc.springapidev;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.github.lipesc</groupId>
-	<artifactId>tgidjavadeveloper</artifactId>
+	<artifactId>springapidev</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tgidjavadeveloper</name>
-	<description>Spring API dev</description>
+	<name>springapidev</name>
+	<description>SpringAPIdev</description>
 	<url/>
 	<licenses>
 		<license/>
