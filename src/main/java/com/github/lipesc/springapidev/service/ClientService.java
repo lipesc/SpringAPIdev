@@ -2,6 +2,8 @@ package com.github.lipesc.springapidev.service;
 
 import com.github.lipesc.springapidev.entity.Client;
 import com.github.lipesc.springapidev.entity.Company;
+import com.github.lipesc.springapidev.entity.DepositRequest;
+import com.github.lipesc.springapidev.entity.WithdrawRequest;
 import com.github.lipesc.springapidev.repository.ClientRepository;
 import com.github.lipesc.springapidev.repository.CompanyRepository;
 import java.util.List;
@@ -25,12 +27,7 @@ public class ClientService {
   private static String webHookURL =
     "https://webhook.site/f0e98593-1916-4e9e-baa6-b54a7e7360ac";
 
-  public Client createClient(Client client, Long companyId) {
-    client.setCompany(
-      companyRepository
-        .findById(companyId)
-        .orElseThrow(() -> new RuntimeException("id company not found"))
-    );
+  public Client createClient(Client client) {
     return clientRepository.save(client);
   }
 
@@ -56,16 +53,18 @@ public class ClientService {
     clientRepository.deleteById(id);
   }
 
-  public void deposit(Long clientId, Long companyId, double amount) {
+  public void deposit(Long clientId, Long companyId, DepositRequest request) {
+    double amount = request.getAmount();
     Client client = clientRepository
-      .findById(clientId)
-      .orElseThrow(() -> new RuntimeException("Client not found"));
+    .findById(clientId)
+    .orElseThrow(() -> new RuntimeException("Client not found"));
     Company company = companyRepository
-      .findById(companyId)
-      .orElseThrow(() -> new RuntimeException("Company not found"));
+    .findById(companyId)
+    .orElseThrow(() -> new RuntimeException("Company not found"));
     if (amount <= 0) {
       throw new RuntimeException("Insufficient deposit");
     }
+    
 
     // Update the client's balance
     client.setAmount(client.getAmount() + amount);
@@ -86,7 +85,10 @@ public class ClientService {
     );
   }
 
-  public void withdraw(Long clientId, Long companyId, double amount) {
+
+  public void withdraw(Long clientId, Long companyId, WithdrawRequest request) {
+    double amount = request.getAmount();
+
     Client client = clientRepository
       .findById(clientId)
       .orElseThrow(() -> new RuntimeException("Client not found"));
@@ -104,12 +106,12 @@ public class ClientService {
     clientRepository.save(client);
 
     // Update the company's balance with the interest
-    company.setAmount(company.getamount() + interestAmount);
+    company.setAmount(company.getamount() - amount + interestAmount);
     companyRepository.save(company);
 
     // Send notification to the client
     sendNotification(
-      "Deposit of " +
+      "withdraw of " +
       amount +
       " was successful, interest on the amount was " +
       interestAmount,
@@ -118,7 +120,7 @@ public class ClientService {
 
     // Send notification to the company
     sendNotification(
-      "Deposit of " + amount + " was made by client " + client.getName(),
+      "withdraw of " + amount + " was made by client " + client.getName(),
       company
     );
   }

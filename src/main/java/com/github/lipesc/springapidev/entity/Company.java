@@ -14,11 +14,12 @@ public class Company {
   private Long id;
 
   @Column(unique = true)
-  private  Long cnpj;
+  private Long cnpj;
 
   private String name;
   private double amount;
   private double interest;
+
 
   public Company() {}
 
@@ -44,11 +45,11 @@ public class Company {
     this.id = id;
   }
 
-  public  Long getCnpj() {
+  public Long getCnpj() {
     return cnpj;
   }
 
-  public void setCnpj( Long cnpj) {
+  public void setCnpj(Long cnpj) {
     String cnpjString = String.valueOf(cnpj);
     if (cnpjString.length() != 14) {
       throw new IllegalArgumentException("CNPJ must have 14 digits");

@@ -24,6 +24,7 @@ public class CompanyService {
   public Optional<Company> getCompanyById(Long id) {
     return companyRepository.findById(id);
   }
+  
 
   public Company updateCompany(Long id, Company companyDetails) {
     Company company = companyRepository

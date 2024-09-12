@@ -10,10 +10,13 @@ public class SpringAPIdev {
 
   public static void main(String[] args) {
     SpringApplication.run(SpringAPIdev.class, args);
+    
   }
 
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
+
+  
 }

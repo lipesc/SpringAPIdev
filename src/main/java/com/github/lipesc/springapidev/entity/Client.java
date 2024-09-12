@@ -1,5 +1,6 @@
 package com.github.lipesc.springapidev.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +24,6 @@ public class Client {
 
   public Client() {}
 
-  
   @ManyToOne
   @JoinColumn(name = "company_id")
   private Company company;
@@ -33,9 +33,10 @@ public class Client {
   }
 
   public void setCompany(Company company) {
+  
     this.company = company;
   }
-  
+
 
   public Client(Long id, Long cpf, String name, double amount) {
     this.id = id;
