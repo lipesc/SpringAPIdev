@@ -19,7 +19,7 @@ public class ClientController {
 
   @PostMapping
   public Client createClient(@RequestBody Client client) {
-    return clientService.createClient(client);
+      return clientService.createClient(client.getCpf(), client.getName(), client.getAmount(), client.getId(), client.getCompany());
   }
 
   @GetMapping
@@ -50,23 +50,15 @@ public class ClientController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/{clientId}/deposit/{companyId}")
-  public ResponseEntity<Void> deposit(
-    @PathVariable Long clientId,
-    @PathVariable Long companyId,
-    @RequestBody DepositRequest request
-  ) {
-    clientService.deposit(clientId, companyId, request);
+  @PostMapping("/deposit/")
+  public ResponseEntity<Void> deposit(@RequestBody DepositRequest request) {
+    clientService.deposit(request);
     return ResponseEntity.ok().build();
   }
 
-  @PostMapping("/{clientId}/withdraw/{companyId}")
-  public ResponseEntity<Void> withdraw(
-    @PathVariable Long clientId,
-    @PathVariable Long companyId,
-    @RequestBody WithdrawRequest request
-  ) {
-    clientService.withdraw(clientId, companyId, request);
+  @PostMapping("/withdraw/")
+  public ResponseEntity<Void> withdraw(@RequestBody WithdrawRequest request) {
+    clientService.withdraw(request);
     return ResponseEntity.ok().build();
   }
 }

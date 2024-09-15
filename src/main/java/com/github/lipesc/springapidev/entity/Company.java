@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 public class Company {
@@ -20,8 +22,10 @@ public class Company {
   private double amount;
   private double interest;
 
-
   public Company() {}
+
+  @OneToMany(mappedBy = "company")
+  private List<Client> clients;
 
   public Company(
     Long id,

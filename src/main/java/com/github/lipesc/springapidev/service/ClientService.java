@@ -25,10 +25,30 @@ public class ClientService {
   private RestTemplate restTemplate;
 
   private static String webHookURL =
-    "https://webhook.site/f0e98593-1916-4e9e-baa6-b54a7e7360ac";
+    "https://webhook.site/d3095a92-e5d4-4c42-aa8e-c44f9ac3e5a7";
 
-  public Client createClient(Client client) {
-    return clientRepository.save(client);
+  public Client createClient(
+    Long cpf,
+    String name,
+    double amount,
+    Long companyId,
+    Company company
+  ) {
+    Client newClient = new Client(); // create a new Client object
+    newClient.setCpf(cpf);
+    newClient.setName(name);
+    newClient.setAmount(amount);
+
+    if (company == null) {
+      Company newCompany = new Company(); // create a new Company object
+      newCompany.setId(companyId); // set the company ID
+      // set other company properties as needed
+      newClient.setCompany(newCompany); // associate the Company object with the Client object
+    } else {
+      newClient.setCompany(company); // associate the existing Company object with the Client object
+    }
+
+    return clientRepository.save(newClient);
   }
 
   public List<Client> getALLClient() {
@@ -53,66 +73,79 @@ public class ClientService {
     clientRepository.deleteById(id);
   }
 
-  public void deposit(Long clientId, Long companyId, DepositRequest request) {
-    double amount = request.getAmount();
+  public void deposit(DepositRequest request) {
+    request.getClientId();
+    request.getCompanyId();
+    request.getAmount();
+
     Client client = clientRepository
-    .findById(clientId)
-    .orElseThrow(() -> new RuntimeException("Client not found"));
+      .findById(request.getClientId())
+      .orElseThrow(() -> new RuntimeException("Client not found"));
     Company company = companyRepository
-    .findById(companyId)
-    .orElseThrow(() -> new RuntimeException("Company not found"));
-    if (amount <= 0) {
+      .findById(request.getCompanyId())
+      .orElseThrow(() -> new RuntimeException("Company not found"));
+    if (request.getAmount() <= 0) {
       throw new RuntimeException("Insufficient deposit");
     }
-    
 
     // Update the client's balance
-    client.setAmount(client.getAmount() + amount);
+    client.setAmount(client.getAmount() + request.getAmount());
     clientRepository.save(client);
 
     // Update the company's balance with the interest
-    company.setAmount(company.getamount() + amount);
+    company.setAmount(company.getamount() + request.getAmount());
     companyRepository.save(company);
     clientRepository.save(client);
 
     // Send notification to the client
-    sendNotification("Deposit of " + amount + " was successful.", client);
+    sendNotification(
+      "Deposit of " + request.getAmount() + " was successful.",
+      client
+    );
 
     // Send notification to the company
     sendNotification(
-      "Deposit of " + amount + " was made by client " + client.getName(),
+      "Deposit of " +
+      request.getAmount() +
+      " was made by client " +
+      client.getName(),
       company
     );
   }
 
-
-  public void withdraw(Long clientId, Long companyId, WithdrawRequest request) {
-    double amount = request.getAmount();
+  public void withdraw(WithdrawRequest request) {
+    request.getClientId();
+    request.getCompanyId();
+    request.getAmount();
 
     Client client = clientRepository
-      .findById(clientId)
+      .findById(request.getClientId())
       .orElseThrow(() -> new RuntimeException("Client not found"));
     Company company = companyRepository
-      .findById(companyId)
+      .findById(request.getCompanyId())
       .orElseThrow(() -> new RuntimeException("Company not found"));
-    if (client.getAmount() < amount) {
+    if (client.getAmount() < request.getAmount()) {
       throw new RuntimeException("Insufficient balance");
     }
     // Calculate the company interest (2% of the withdrawal amount)
-    double interestAmount = amount * 0.02;
+    double interestAmount = request.getAmount() * 0.02;
 
     // Update the client's balance
-    client.setAmount(client.getAmount() - (amount - interestAmount));
+    client.setAmount(
+      client.getAmount() - (request.getAmount() - interestAmount)
+    );
     clientRepository.save(client);
 
     // Update the company's balance with the interest
-    company.setAmount(company.getamount() - amount + interestAmount);
+    company.setAmount(
+      company.getamount() - request.getAmount() + interestAmount
+    );
     companyRepository.save(company);
 
     // Send notification to the client
     sendNotification(
       "withdraw of " +
-      amount +
+      request.getAmount() +
       " was successful, interest on the amount was " +
       interestAmount,
       client
@@ -120,7 +153,10 @@ public class ClientService {
 
     // Send notification to the company
     sendNotification(
-      "withdraw of " + amount + " was made by client " + client.getName(),
+      "withdraw of " +
+      request.getAmount() +
+      " was made by client " +
+      client.getName(),
       company
     );
   }
