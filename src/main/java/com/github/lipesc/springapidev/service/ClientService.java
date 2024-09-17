@@ -40,14 +40,14 @@ public class ClientService {
     newClient.setAmount(amount);
 
     if (company == null) {
-      Company newCompany = new Company(); // create a new Company object
-      newCompany.setId(companyId); // set the company ID
-      // set other company properties as needed
-      newClient.setCompany(newCompany); // associate the Company object with the Client object
-    } else {
-      newClient.setCompany(company); // associate the existing Company object with the Client object
-    }
+      Company companys = companyRepository
+        .findById(companyId)
+        .orElseThrow(() -> new RuntimeException("Company not found"));
 
+      newClient.setCompany(companys);
+    } else {
+      newClient.setCompany(company);
+    }
     return clientRepository.save(newClient);
   }
 
